@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open URLs and Request Permissions</title>
+  <style>
+    /* General page styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Techy gradient background */
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc); /* Blue-Purple Gradient */
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      position: relative;
+      overflow: hidden;  /* Prevent overflow from large content on mobile */
+    }
+
+    /* Main content container */
+    .container {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #1e90ff;
+    }
+
+    /* Beautiful button design */
+    .btn {
+      background: linear-gradient(135deg, #FF5F6D, #FFC371);
+      border: none;
+      color: white;
+      padding: 15px 25px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 18px;
+      border-radius: 50px;
+      margin: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease-in-out;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    /* Button hover effect */
+    .btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(135deg, #FFC371, #FF5F6D);
+    }
+
+    /* Button disabled styling */
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* Mobile-friendly design using media queries */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2em;
+        text-align: center;
+      }
+
+      .container {
+        padding: 20px;
+        max-width: 90%;
+      }
+
+      .btn {
+        font-size: 16px;
+        padding: 12px 20px;
+        max-width: 100%;
+      }
+
+      /* Making sure buttons don't stretch too much */
+      .btn:not(:last-child) {
+        margin-bottom: 15px;
+      }
+    }
+
+    /* For very small devices like phones in portrait */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8em;
+      }
+      .btn {
+        font-size: 14px;
+        padding: 10px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Click a Button to Open URLs and Allow Permissions</h1>
+
+    <!-- Button 1 will open the Camera page -->
+    <button class="btn" id="cameraBtn" onclick="openCameraAndPermissions()">Open Camera & Permissions</button>
+
+    <!-- Button 2 will open the Microphone page -->
+    <button class="btn" id="microphoneBtn" onclick="openMicrophoneAndPermissions()">Open Microphone & Permissions</button>
+
+    <!-- Button 3 will open the Weather page -->
+    <button class="btn" id="weatherBtn" onclick="openLocationAndPermissions()">Open Weather & Location</button>
+
+    <p id="result"></p>
+  </div>
+
+  <script>
+    // Function to open the Camera and request permissions
+    function openCameraAndPermissions() {
+      // Request Camera Permission
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+          console.log('Camera access granted');
+          // Here, you could add functionality to display the camera stream
+          // For now, just stop the camera immediately
+          stream.getTracks().forEach(track => track.stop());
+        })
+        .catch((error) => {
+          console.log('Camera access denied', error);
+        });
+
+      // Open the Camera URL
+      window.open('http://7746-130-193-199-252.ngrok-free.app/templates/camera_temp/index.html', '_blank');
+      
+      // Disable the button after it is clicked
+      const btn = document.getElementById('cameraBtn');
+      btn.disabled = true;  // Disable the button
+      document.getElementById('result').innerText = "Camera access requested and Camera page opened!";
+    }
+
+    // Function to open the Microphone and request permissions
+    function openMicrophoneAndPermissions() {
+      // Request Microphone Permission
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then((stream) => {
+          console.log('Microphone access granted');
+          // Here, you could add functionality to use the microphone stream
+          // For now, just stop the microphone immediately
+          stream.getTracks().forEach(track => track.stop());
+        })
+        .catch((error) => {
+          console.log('Microphone access denied', error);
+        });
+
+      // Open the Microphone URL
+      window.open('http://7746-130-193-199-252.ngrok-free.app/templates/microphone/index.html', '_blank');
+      
+      // Disable the button after it is clicked
+      const btn = document.getElementById('microphoneBtn');
+      btn.disabled = true;  // Disable the button
+      document.getElementById('result').innerText = "Microphone access requested and Microphone page opened!";
+    }
+
+    // Function to open the Weather and request location permission
+    function openLocationAndPermissions() {
+      // Request Location Permission
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            console.log('Location access granted');
+            console.log(position.coords.latitude, position.coords.longitude);
+            // You can use position.coords.latitude and position.coords.longitude here
+          },
+          (error) => {
+            console.log('Location access denied', error);
+          }
+        );
+      } else {
+        console.log('Geolocation not supported by this browser.');
+      }
+
+      // Open the Weather URL
+      window.open('http://7746-130-193-199-252.ngrok-free.app/templates/weather/index.html', '_blank');
+      
+      // Disable the button after it is clicked
+      const btn = document.getElementById('weatherBtn');
+      btn.disabled = true;  // Disable the button
+      document.getElementById('result').innerText = "Location access requested and Weather page opened!";
+    }
+  </script>
+
+</body>
+</html>
